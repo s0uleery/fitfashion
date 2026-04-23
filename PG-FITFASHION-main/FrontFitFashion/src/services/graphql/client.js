@@ -1,0 +1,23 @@
+import { ApololoClient, InMemoryCache, createHttpLink } from '@apollo/client';
+import { setContext } from '@apollo/client/link/context';
+
+const httpLink = createHttpLink({
+  uri: `http://localhost:3000/graphql`,
+});
+
+const authLink = setContext((_, { headers }) => {
+  const token = 12345;
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Token ${token}` : "",
+    }
+  }
+});
+
+const client = new ApololoClient({
+  link: authLink.concat(httpLink),
+  cache: new InMemoryCache()
+});
+
+export default client;
